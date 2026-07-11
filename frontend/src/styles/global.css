@@ -1,0 +1,172 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: #f4f6f8;
+  color: #1a1f2b;
+}
+
+.app-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.screen-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+}
+
+.card h3 {
+  margin-top: 0;
+  font-size: 14px;
+  color: #445;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #d7dbe0;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.sentiment-options {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+}
+
+.sentiment-options label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 400;
+}
+
+.btn {
+  background: #2f6fed;
+  color: #fff;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn:hover {
+  background: #2559c7;
+}
+
+.btn.secondary {
+  background: #eef1f5;
+  color: #333;
+}
+
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  height: 560px;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.chat-bubble {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  max-width: 90%;
+}
+
+.chat-bubble.user {
+  background: #2f6fed;
+  color: white;
+  align-self: flex-end;
+}
+
+.chat-bubble.assistant {
+  background: #f0f2f5;
+  color: #222;
+  align-self: flex-start;
+}
+
+.chat-bubble .tool-tag {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 11px;
+  background: rgba(0, 0, 0, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.chat-input-row input {
+  flex: 1;
+}
+
+.followups {
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.followups a {
+  display: block;
+  color: #2f6fed;
+  text-decoration: none;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
