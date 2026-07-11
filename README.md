@@ -269,9 +269,3 @@ Planned enhancements:
 
 Computer Science Engineering Graduate
 AI/ML & Cloud Computing Enthusiast
-
----
-
-## License
-
-This project is created for educational and portfolio purposes.
