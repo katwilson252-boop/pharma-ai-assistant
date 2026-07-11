@@ -1,144 +1,277 @@
-# AI-First CRM – HCP Module: Log Interaction Screen
+# IntelliCRM – AI-Powered HCP Relationship Management System
 
-An AI-first "Log HCP Interaction" screen for pharma field reps. Reps can log
-a visit either through a structured form **or** by chatting naturally with an
-AI assistant, which is backed by a LangGraph agent running on Groq LLMs.
+![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green.svg)
+![LangGraph](https://img.shields.io/badge/LangGraph-Agent_Framework-purple.svg)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue.svg)
+![Groq](https://img.shields.io/badge/Groq-LLM_API-orange.svg)
 
-## Architecture
+## Overview
+
+**IntelliCRM** is an AI-powered Healthcare Professional (HCP) Relationship Management System designed to help pharmaceutical teams efficiently manage interactions, conversations, and insights related to healthcare professionals.
+
+The system combines **Large Language Models (LLMs)**, **agent workflows**, and **structured data management** to create an intelligent assistant capable of understanding HCP interactions and providing meaningful insights.
+
+The project uses **LangGraph** to build an AI agent workflow, **FastAPI** for backend APIs, **PostgreSQL** for persistent data storage, and **Groq-powered LLM inference** for fast AI responses.
+
+---
+
+## Key Features
+
+### 🤖 AI-Powered Assistant
+
+* Intelligent conversational assistant powered by LLMs
+* Uses LangGraph for structured AI agent workflows
+* Context-aware responses based on stored information
+
+### 🏥 HCP Relationship Management
+
+* Manage healthcare professional interactions
+* Store and retrieve relationship data
+* Maintain structured HCP information
+
+### ⚡ Fast Backend APIs
+
+* Built using FastAPI
+* Modular backend architecture
+* RESTful API design
+
+### 🧠 Agent-Based Architecture
+
+* LangGraph-based AI workflow
+* Separation of AI logic and API layers
+* Extensible agent pipeline
+
+### 🗄️ Persistent Database
+
+* PostgreSQL database integration
+* Environment-based configuration
+* Scalable data storage design
+
+---
+
+## System Architecture
 
 ```
-Frontend (React + Redux)  ──HTTP──►  Backend (FastAPI)
-     │                                     │
-     │  structured form  ───────────►  /api/interactions  ──► Postgres
-     │                                     │
-     └  chat messages    ───────────►  /api/chat
-                                            │
-                                    LangGraph Agent
-                                    (Groq gemma2-9b-it,
-                                     fallback llama-3.3-70b-versatile)
-                                            │
-                                     5 Tools (see below)
+                User
+                 |
+                 |
+            FastAPI Backend
+                 |
+                 |
+        ---------------------
+        |                   |
+   LangGraph Agent       PostgreSQL
+        |
+        |
+     ChatGroq LLM
 ```
 
-### LangGraph agent's role
+---
 
-The agent sits behind the chat panel and acts as the rep's assistant for the
-entire interaction lifecycle: understanding a free-text description of a
-visit, deciding which tool(s) to call, pulling historical context when
-useful, writing structured data to the database, and proactively suggesting
-next steps — all without the rep touching the form.
+## Tech Stack
 
-### The 5 tools
+### Backend
 
-| Tool | Purpose |
-|---|---|
-| `log_interaction` (required) | Takes free text, uses the LLM to extract HCP name, topics, sentiment, materials/samples, outcomes, and follow-ups as JSON, then writes a new `Interaction` row. |
-| `edit_interaction` (required) | Takes an `interaction_id` + a free-text description of the change, uses the LLM to compute a partial update, and applies it to the existing row. |
-| `get_hcp_history` | Looks up all past interactions for a named HCP so the agent has context before logging/advising. |
-| `suggest_followups` | Given an interaction summary, proposes 2–4 concrete next-step actions (mirrors the "AI Suggested Follow-ups" panel in the mock). |
-| `check_compliance_flags` | Screens a summary for pharma-compliance concerns (off-label talk, excessive gifting, etc.) before the interaction is finalized. |
+* Python
+* FastAPI
+* Uvicorn
 
-## Tech stack
+### AI / LLM
 
-- **Frontend:** React 18, Redux Toolkit, Google Inter font
-- **Backend:** Python, FastAPI
-- **Agent framework:** LangGraph
-- **LLM:** Groq — `gemma2-9b-it` primary, `llama-3.3-70b-versatile` fallback
-- **Database:** PostgreSQL via SQLAlchemy (swap-able to MySQL, see backend `.env.example`)
+* LangGraph
+* LangChain
+* ChatGroq
+* Groq LLM API
 
-## Prerequisites
+### Database
 
-- Python 3.11+
-- Node.js 18+
-- A running PostgreSQL instance (local install or Docker)
-- A free Groq API key from https://console.groq.com
+* PostgreSQL
 
-## Setup — Backend
+### Configuration
+
+* Environment variables
+* Python dotenv
+
+---
+
+## Project Structure
+
+```
+pharma-ai-assistant/
+
+├── backend/
+│   |
+│   ├── app/
+│   │   |
+│   │   ├── agent/
+│   │   │   ├── graph.py
+│   │   │   ├── llm.py
+│   │   │   └── ...
+│   │   |
+│   │   ├── routes/
+│   │   |
+│   │   └── main.py
+│   |
+│   ├── requirements.txt
+│   └── .env
+│
+├── README.md
+└── .gitignore
+```
+
+---
+
+# Installation and Setup
+
+## 1. Clone Repository
+
+```bash
+git clone https://github.com/<your-username>/pharma-ai-assistant.git
+
+cd pharma-ai-assistant
+```
+
+---
+
+## 2. Create Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+Activate environment:
+
+### Windows
+
+```bash
+venv\Scripts\activate
+```
+
+### Linux / Mac
+
+```bash
+source venv/bin/activate
+```
+
+---
+
+## 3. Install Dependencies
+
+```bash
+pip install -r backend/requirements.txt
+```
+
+---
+
+## 4. Configure Environment Variables
+
+Create a `.env` file inside the backend directory:
+
+```env
+GROQ_API_KEY=your_groq_api_key
+
+DATABASE_URL=postgresql://username:password@localhost:5432/hcp_crm
+```
+
+---
+
+## 5. Setup PostgreSQL Database
+
+Create database:
+
+```sql
+CREATE DATABASE hcp_crm;
+```
+
+Update your database credentials inside `.env`.
+
+---
+
+## 6. Run Application
+
+Navigate to backend:
 
 ```bash
 cd backend
-python3 -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-
-cp .env.example .env
-# edit .env: set GROQ_API_KEY and DATABASE_URL
-
-# make sure the database in DATABASE_URL exists, e.g.:
-# createdb hcp_crm
-
-uvicorn app.main:app --reload --port 8000
 ```
 
-The API is now live at `http://localhost:8000` (docs at `/docs`).
-
-## Setup — Frontend
+Start FastAPI server:
 
 ```bash
-cd frontend
-npm install
-cp .env.example .env
-npm start
+uvicorn app.main:app --reload
 ```
 
-Opens at `http://localhost:3000`.
-
-## Using the app
-
-- **Form path:** fill in the left-hand card and click "Log Interaction".
-- **Chat path:** type something like *"Met Dr. Sharma, discussed OncoBoost
-  Phase III data, she seemed positive, shared the brochure and left a sample"*
-  into the AI Assistant panel. The agent extracts structured fields and saves
-  the interaction automatically, then can suggest follow-ups if you ask
-  "what should I do next?".
-- **Editing via chat:** reference the interaction id returned by the agent,
-  e.g. *"for interaction <id>, change sentiment to negative and add a
-  follow-up to send the Phase III PDF"*.
-
-## Project structure
+The API will be available at:
 
 ```
-backend/
-  app/
-    agent/
-      llm.py        # Groq client wrapper w/ fallback model
-      tools.py       # the 5 LangGraph tools
-      graph.py       # LangGraph StateGraph wiring
-    db/
-      models.py      # HCP, Interaction SQLAlchemy models
-      database.py    # engine/session
-    routes/
-      interactions.py  # structured-form CRUD endpoints
-      chat.py           # conversational endpoint
-    schemas.py       # Pydantic request/response models
-    config.py        # env-based settings
-    main.py          # FastAPI app + CORS + router registration
-  requirements.txt
-  .env.example
-
-frontend/
-  src/
-    components/
-      InteractionForm.js     # structured form (left panel)
-      ChatAssistant.js        # AI chat panel (right panel)
-      LogInteractionScreen.js # combines both
-    redux/
-      interactionSlice.js    # form state + async thunks
-      store.js
-    api/client.js            # fetch wrapper for the FastAPI backend
-    styles/global.css        # Inter font + layout
-  package.json
-  .env.example
+http://127.0.0.1:8000
 ```
 
-## Notes / what I understood from the task
+API documentation:
 
-The brief asks for a "Log Interaction" screen that lets a rep choose between
-a structured form and a conversational interface, backed by a mandatory
-LangGraph + LLM agent with at least 5 tools (including log/edit). I
-implemented both entry points against a shared FastAPI + Postgres backend so
-a logged interaction looks identical regardless of which path created it,
-and built the agent so the two required tools (log/edit) do the heavy lifting
-of LLM-based entity extraction, while three supporting tools (history,
-follow-up suggestions, compliance check) round out realistic sales-rep
-workflows a life-sciences CRM would need.
+```
+http://127.0.0.1:8000/docs
+```
+
+---
+
+# API Overview
+
+| Endpoint | Method | Description               |
+| -------- | ------ | ------------------------- |
+| `/`      | GET    | Health check              |
+| `/docs`  | GET    | Swagger API documentation |
+
+(More endpoints will be added as the system evolves.)
+
+---
+
+# AI Workflow
+
+The AI assistant follows an agent-based workflow:
+
+1. User sends a query
+2. FastAPI receives request
+3. LangGraph manages the reasoning flow
+4. ChatGroq generates AI response
+5. PostgreSQL stores required information
+6. Response is returned to the user
+
+---
+
+# Future Improvements
+
+Planned enhancements:
+
+* [ ] HCP profile management
+* [ ] Interaction history tracking
+* [ ] AI-generated relationship summaries
+* [ ] Document/RAG-based knowledge retrieval
+* [ ] Authentication and authorization
+* [ ] Frontend dashboard
+* [ ] Analytics and reporting
+* [ ] Cloud deployment
+
+---
+
+# Security Notes
+
+* API keys are stored using environment variables
+* Sensitive credentials are excluded from GitHub
+* `.env` files should never be committed
+
+---
+
+# Author
+
+**Alina Iram**
+
+Computer Science Engineering Graduate
+AI/ML & Cloud Computing Enthusiast
+
+---
+
+## License
+
+This project is created for educational and portfolio purposes.
