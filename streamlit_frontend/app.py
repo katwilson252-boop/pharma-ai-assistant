@@ -1,8 +1,7 @@
 import streamlit as st
 import requests
 
-API_URL = "API_URL = "https://pharma-ai-assistant-api.onrender.com""
-
+API_URL = "https://pharma-ai-assistant-api.onrender.com"
 st.set_page_config(
     page_title="AI-First CRM",
     page_icon="💊",
